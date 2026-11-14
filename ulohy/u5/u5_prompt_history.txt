@@ -1,0 +1,2 @@
+1. Pridaj do tejto dart/flutter aplikácie požiadavky podľa zadania (skupina 1 + to čo je zadané pre obe skupiny) Sprav aj riesenie.md, screenshoty a prompt history spravím sám.
+Prílohy: zadanie U5, main.dart (z U4)
