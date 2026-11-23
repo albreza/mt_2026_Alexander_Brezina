@@ -58,4 +58,4 @@ Do tohto priečinka uložte:
 
 - **prezentáciu** na prednášku – PDF, Keynote, PowerPoint ... so **zoznamom zdrojov**
 - **popis použitia LLM** – samostatný súbor alebo súčasť prezentácie
-  (nástroje, na čo, kľúčové prompty, čo ste overili a upravili sami),
+  (nástroje, na čo, čo ste overili a upravili sami) a história vašich promptov,

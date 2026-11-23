@@ -1,4 +1,7 @@
 # Zdrojový kód
 
-Sem patrí zdrojový kód celého riešenia projektu – mobilná aplikácia, backend, skripty ...
-Ak má riešenie viac častí, dajte každú do vlastného podpriečinka (napr. `app/`, `backend/`).
+Sem patrí zdrojový kód celého riešenia projektu:
+
+- `app/` – mobilná aplikácia (Flutter projekt, `flutter create app`),
+- ďalšie časti, ak sú – napr. `backend/` (server, Cloud Functions, pravidlá prístupu), `scripts/`.
+

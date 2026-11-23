@@ -13,10 +13,12 @@ Celú prácu počas semestra odovzdávate v tomto jedinom repozitári.
 
 ## Pravidlá
 
-- Súbory `README.md` **nemeňte** – obsahujú zadania a môžu sa počas semestra aktualizovať.
+- Súbory `README.md` **nevytvárajte ani nemeňte** – patria šablóne, obsahujú zadania a môžu sa počas semestra
+  aktualizovať. Vlastné súbory pomenujte inak (napr. `riesenie.md`, `LAUNCH.md`).
 - Riešenie priebežne **commitujte a pushujte**.
-- Používanie LLM nástrojov sa **očakáva**. Skoro každá aktivita musí obsahovať popis, ako ste ich použili
-  (nástroje, na čo, kľúčové prompty, čo ste upravili sami).
+- Používanie LLM nástrojov sa **očakáva**. Takmer každá aktivita musí obsahovať popis, ako ste ich použili
+  (nástroje, na čo, čo ste upravili sami), a **históriu promptov** – iba to, čo ste do nástroja písali vy,
+  odpovede AI netreba.
 - Za odovzdané riešenie zodpovedáte vy – musíte mu rozumieť a vedieť ho vysvetliť.
 - Nikdy necommitujte API kľúče, heslá ani osobné údaje.
 
@@ -77,3 +79,6 @@ git add student.txt
 git commit -m "Update from template"
 git push
 ```
+
+Potom skontrolujte, že v súbore nezostali riadky `<<<<<<<`, `=======` a `>>>>>>>` – znamenajú
+nevyriešený konflikt a treba ich odstrániť.
