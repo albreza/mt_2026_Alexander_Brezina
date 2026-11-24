@@ -1,0 +1,1 @@
+etapa 2, as you type search - vyhľadávanie(recipes /search?q=) hľadať má server, prepínač slow network - ku každej požiadavke pridá delay náhodne 0-3000ms, pri rýchlom písaní sa nesmú zpbraziť výsledky staršieho dopytu, prázdny výsledok má vlastný text

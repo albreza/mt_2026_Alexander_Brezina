@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:http/http.dart' as http;
 
@@ -14,40 +15,54 @@ class RecipesApiException implements Exception {
   String toString() => message;
 }
 
-/// Vsetky HTTP poziadavky v aplikacii su na jednom mieste.
+/// Jedina trieda, ktora komunikuje s DummyJSON serverom.
 class RecipesApi {
   RecipesApi({http.Client? client}) : _client = client ?? http.Client();
 
   static const String _host = 'dummyjson.com';
   final http.Client _client;
+  final Random _random = Random();
 
-  /// Parametre pre zoznam, vyhladavanie, strankovanie a triedenie.
-  /// select musi obsahovat vsetky polia, ktore potrebuje model a UI.
+  /// V rezime Slow network server kazdu poziadavku zdrzi o 0 az 3000 ms.
+  /// Oneskorenie vykonava server cez parameter ?delay=..., nie Flutter UI.
+  void _addDelay(Map<String, String> params, bool slowNetwork) {
+    if (slowNetwork) {
+      params['delay'] = '${_random.nextInt(3001)}';
+    }
+  }
+
+  /// Zoznam alebo serverove hladanie; vratane sortovania a strankovania.
   Future<RecipesPage> getRecipes({
     int limit = 10,
     int skip = 0,
     String query = '',
     String? sortBy,
     String order = 'desc',
-    int delayMs = 1500,
+    bool slowNetwork = false,
     bool simulate503 = false,
   }) async {
     if (simulate503) {
-      await _getJson(Uri.https(_host, '/http/503', {'delay': '$delayMs'}));
-      throw const RecipesApiException('Test HTTP 503 zlyhal.');
+      final errorParams = <String, String>{};
+      _addDelay(errorParams, slowNetwork);
+      // Endpoint na testovanie chyboveho HTTP statusu.
+      await _getJson(Uri.https(_host, '/http/503', errorParams));
+      throw const RecipesApiException(
+        'HTTP 503: Služba je dočasne nedostupná. Skúste to znova.',
+      );
     }
 
     final params = <String, String>{
       'limit': '$limit',
       'skip': '$skip',
       'select': 'id,name,cuisine,prepTimeMinutes,rating,image',
-      'delay': '$delayMs',
     };
 
     if (sortBy != null) {
       params['sortBy'] = sortBy;
       params['order'] = order;
     }
+
+    _addDelay(params, slowNetwork);
 
     final trimmedQuery = query.trim();
     if (trimmedQuery.isNotEmpty) {
@@ -62,19 +77,22 @@ class RecipesApi {
     return RecipesPage.fromJson(await _getJson(uri));
   }
 
-  /// Jeden recept (napr. /recipes/1).
-  Future<Recipe> getRecipe(int id) async {
-    final uri = Uri.https(_host, '/recipes/$id');
+  /// Detail receptu - aj tato HTTP poziadavka respektuje Slow network.
+  Future<Recipe> getRecipe(int id, {bool slowNetwork = false}) async {
+    final params = <String, String>{};
+    _addDelay(params, slowNetwork);
+    final uri = Uri.https(_host, '/recipes/$id', params);
     return Recipe.fromJson(await _getJson(uri));
   }
 
-  /// Samostatna metoda pre vyhladavanie (alternativa k getRecipes(query: ...)).
   Future<RecipesPage> searchRecipes(
     String query, {
     int limit = 10,
     int skip = 0,
     String? sortBy,
     String order = 'desc',
+    bool slowNetwork = false,
+    bool simulate503 = false,
   }) {
     return getRecipes(
       query: query,
@@ -82,6 +100,8 @@ class RecipesApi {
       skip: skip,
       sortBy: sortBy,
       order: order,
+      slowNetwork: slowNetwork,
+      simulate503: simulate503,
     );
   }
 
@@ -113,13 +133,7 @@ class RecipesApi {
     try {
       final data = jsonDecode(utf8.decode(response.bodyBytes));
       if (data is! Map<String, dynamic>) {
-        throw const FormatException('Neplatny format JSON.');
-      }
-      // Ak mock endpoint vrati JSON so statusom 503, osetrime aj to.
-      if (uri.path == '/http/503' && data['status'].toString() == '503') {
-        throw const RecipesApiException(
-          'HTTP 503: Služba je dočasne nedostupná. Skúste to znova.',
-        );
+        throw const FormatException('Neplatný formát JSON.');
       }
       return data;
     } on FormatException {
