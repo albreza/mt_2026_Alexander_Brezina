@@ -85,6 +85,56 @@ class RecipesApi {
     return Recipe.fromJson(await _getJson(uri));
   }
 
+  /// Nacita tagy priamo zo servera GET /recipes/tags.
+  /// Tento endpoint vracia JSON zoznam, nie objekt s klucom "recipes".
+  Future<List<String>> getTags({
+    bool slowNetwork = false,
+    bool simulate503 = false,
+  }) async {
+    if (simulate503) {
+      await _requestJson(_errorUri(slowNetwork));
+      throw const RecipesApiException('Simulacia HTTP 503 nebola uspesna.');
+    }
+
+    final params = <String, String>{};
+    _addDelay(params, slowNetwork);
+    final data = await _requestJson(Uri.https(_host, '/recipes/tags', params));
+    if (data is! List || data.any((item) => item is! String)) {
+      throw const RecipesApiException('Server vratil neplatny zoznam tagov.');
+    }
+    return List<String>.from(data);
+  }
+
+  /// Recepty podla tagu vybera SERVER, nie lokalny filter vo Flutteri.
+  /// Napr. GET /recipes/tag/Pizza?limit=10&skip=0&select=...
+  Future<RecipesPage> getRecipesByTag(
+    String tag, {
+    int limit = 10,
+    int skip = 0,
+    bool slowNetwork = false,
+    bool simulate503 = false,
+  }) async {
+    if (simulate503) {
+      await _requestJson(_errorUri(slowNetwork));
+      throw const RecipesApiException('Simulacia HTTP 503 nebola uspesna.');
+    }
+
+    final params = <String, String>{
+      'limit': '$limit',
+      'skip': '$skip',
+      'select': 'id,name,cuisine,prepTimeMinutes,rating,image',
+    };
+    _addDelay(params, slowNetwork);
+    final uri = Uri.https(_host, '/recipes/tag/$tag', params);
+    return RecipesPage.fromJson(await _getJson(uri));
+  }
+
+  Uri _errorUri(bool slowNetwork) {
+    final params = <String, String>{};
+    _addDelay(params, slowNetwork);
+    return Uri.https(_host, '/http/503', params);
+  }
+
   Future<RecipesPage> searchRecipes(
     String query, {
     int limit = 10,
@@ -106,6 +156,15 @@ class RecipesApi {
   }
 
   Future<Map<String, dynamic>> _getJson(Uri uri) async {
+    final data = await _requestJson(uri);
+    if (data is! Map<String, dynamic>) {
+      throw const RecipesApiException('Server vratil neplatny format dat.');
+    }
+    return data;
+  }
+
+  /// Dekoduje JSON objekt AJ JSON zoznam, ktory vracia /recipes/tags.
+  Future<dynamic> _requestJson(Uri uri) async {
     late final http.Response response;
     try {
       response = await _client.get(uri).timeout(const Duration(seconds: 12));
@@ -131,13 +190,9 @@ class RecipesApi {
     }
 
     try {
-      final data = jsonDecode(utf8.decode(response.bodyBytes));
-      if (data is! Map<String, dynamic>) {
-        throw const FormatException('Neplatný formát JSON.');
-      }
-      return data;
+      return jsonDecode(utf8.decode(response.bodyBytes));
     } on FormatException {
-      throw const RecipesApiException('Server vrátil neplatné dáta.');
+      throw const RecipesApiException('Server vrátil neplatné JSON dáta.');
     }
   }
 

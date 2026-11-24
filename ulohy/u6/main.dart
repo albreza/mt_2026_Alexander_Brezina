@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'models/recipe.dart';
+import 'screens/recipes_by_tag_screen.dart';
 import 'services/recipes_api.dart';
 
 void main() => runApp(const MyApp());
@@ -218,6 +219,32 @@ class _RecipesScreenState extends State<RecipesScreen> {
       appBar: AppBar(
         title: const Text('Recepty'),
         actions: [
+          IconButton(
+            tooltip: 'Filtrovať recepty podľa tagu',
+            icon: const Icon(Icons.local_offer_outlined),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => RecipesByTagScreen(
+                    api: _api,
+                    slowNetwork: _slowNetwork,
+                    simulate503: _simulate503,
+                    onOpenRecipe: (context, recipe) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => RecipeDetailScreen(
+                            id: recipe.id,
+                            api: _api,
+                            slowNetwork: _slowNetwork,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
           PopupMenuButton<bool>(
             tooltip: 'Testovanie HTTP 503',
             icon: Icon(_simulate503 ? Icons.cloud_off_outlined : Icons.more_vert),
@@ -617,3 +644,4 @@ Widget _detail(IconData icon, String value) {
     ),
   );
 }
+
