@@ -11,3 +11,4 @@ formu riešenia volíte sami. Súbory `README.md` nevytvárajte ani nemeňte.
 | [U3](u3/) | Implementácia obrazovky podľa návodu |
 | [U4](u4/) | Implementácia obrazovky |
 | [U5](u5/) | Interaktívna obrazovka |
+| [U6](u6/) | Dáta zo servera |
