@@ -1,0 +1,43 @@
+Opis Projektu (ver. 0.1)
+
+Pracovný názov: FullShelves
+Platforma: Android
+Technológia: Flutter (Dart)
+
+OPIS PROJEKTU
+
+Cieľom projektu je vytvoriť mobilnú aplikáciu na evidenciu potravín a ďalších produktov, správu zásob a sledovanie dátumov spotreby či kvality.
+
+Aplikácia má pomáhať používateľom udržiavať prehľad o dostupných produktoch, zjednodušiť ich kontrolu a obmedziť plytvanie potravinami.
+
+Riešenie môže byť využiteľné v domácnostiach na správu nákupov a domácich zásob, ale aj v potravinových predajniach na evidenciu tovaru, kontrolu regálov a sledovanie expirácie.
+
+HLAVNÉ FUNKCIONALITY
+
+1. Správa zoznamov – vytváranie nákupných zoznamov alebo zoznamov produktov, ktoré treba doplniť či skontrolovať.
+
+2. Evidencia zásob – pridávanie a úprava produktov, evidencia počtu balení, kategórií a miesta uskladnenia.
+
+3. Sledovanie trvanlivosti a kvality – evidencia dátumov spotreby, otvorených balení, skladových dávok a manuálne sledovanie zrelosti ovocia a zeleniny.
+
+4. Upozornenia a mobilné funkcie – notifikácie na blížiacu sa expiráciu, využitie fotoaparátu a prípadné rozpoznávanie údajov z obalov.
+
+PREDBEŽNÁ ARCHITEKTÚRA
+
+Aplikácia bude vytvorená pomocou Flutteru a Dartu a rozdelená na tri hlavné vrstvy:
+
+1. Prezentačná vrstva – používateľské rozhranie podľa Material Design 3, obrazovky, formuláre a navigácia.
+
+2. Aplikačná vrstva – logika správy zásob, vyhodnocovanie expirácie, sledovanie kvality a spracovanie údajov.
+
+3. Dátová vrstva – lokálna databáza SQLite na ukladanie používateľských údajov a JSON katalóg produktov.
+
+Aplikácia bude primárne fungovať offline, bez samostatného serverového backendu.
+
+Z mobilných technológií sa plánuje využitie fotoaparátu, lokálneho úložiska a systémových notifikácií. Možným rozšírením bude skenovanie čiarových kódov alebo OCR na rozpoznávanie dátumov spotreby.
+
+PREDPOKLADANÉ OBRAZOVKY
+
+Aplikácia bude obsahovať minimálne päť obrazoviek: zoznam položiek, prehľad zásob, pridanie alebo úpravu produktu, detail produktu a prehľad expirácie a kvality.
+
+Presná cieľová skupina a niektoré funkcionality budú spresnené počas toho ako sa projekt bude vyvíjať(a načo si trúfnem).
